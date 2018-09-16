@@ -6,7 +6,7 @@
 #include "EWrapper.h"
 #include "EReaderOSSignal.h"
 #include "EReader.h"
-
+#include "Contract.h"
 #include <memory>
 #include <vector>
 
@@ -47,7 +47,7 @@ public:
 	void disconnect() const;
 	bool isConnected() const;
 	void outputCSV(std::vector<file_row>* pre_processed_file, std::string file_name);
-
+	void inputStks();
 private:
 	//Functions go here
 	void reqCurrentTime();

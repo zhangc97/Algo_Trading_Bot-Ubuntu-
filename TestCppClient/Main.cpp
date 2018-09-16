@@ -42,6 +42,7 @@ int main(int argc, char** argv)
 		client.connect( host, port, clientId);
 
 		while( client.isConnected()) {
+			client.inputStks();
 			client.processMessages();
 		}
 		if( attempt >= MAX_ATTEMPTS) {

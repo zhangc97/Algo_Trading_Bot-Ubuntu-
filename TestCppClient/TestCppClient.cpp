@@ -169,7 +169,23 @@ void TestCppClient::currentTime(long time)
 		m_state = ST_PING_ACK;
 	}
 }
+void TestCppClient::inputStks() 
+{
+	std::vector<Contract> historical_array;
+	unsigned int numberStks, reqId = 100;
+    std::vector<std::string> symbols;
+    printf("How many stocks? ");
+    std::cin >> numberStks;
+    for (unsigned int i = 0; i < numberStks; i++) {
+        std::string current_symbol;
+        printf("Enter stock symbol: ");
+        std::cin >> current_symbol;
+        m_pClient->reqMatchingSymbols(reqId, current_symbol);
+        reqId++;
 
+    }
+	
+}
 void TestCppClient::historicalDataRequests(const Contract &data)
 {
 	/*** Requesting historical data ***/
