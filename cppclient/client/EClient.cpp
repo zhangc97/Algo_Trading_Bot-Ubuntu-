@@ -20,6 +20,7 @@
 #include "ETransport.h"
 #include "FamilyCode.h"
 
+#include <iostream>
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
@@ -2760,6 +2761,7 @@ void EClient::reqFamilyCodes()
 
 void EClient::reqMatchingSymbols(int reqId, const std::string& pattern)
 {
+    std::cout << pattern << std::endl;
 	if( !isConnected()) {
 		m_pEWrapper->error( NO_VALID_ID, NOT_CONNECTED.code(), NOT_CONNECTED.msg());
 		return;

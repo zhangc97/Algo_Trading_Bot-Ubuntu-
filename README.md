@@ -13,6 +13,9 @@ make clean
 make 
 ./TestCppClient
 ```
+**Usage requires a TWS Trading Account**
+**Default port is set to 7497 (Paper Trading Account)**
+**Historical Data calls are located in** ``` ContractSamples.h ``` **and require a TWS data subscription**
 
 ## Future plans
 * back test and deploy to brokerage account

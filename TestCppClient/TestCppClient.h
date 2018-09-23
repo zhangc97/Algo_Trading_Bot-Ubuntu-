@@ -17,6 +17,8 @@ struct file_row {
 	double high_price;
 	double low_price;
 	int volume;
+    int count; 
+    double WAP;
 };
 class EClientSocket;
 
@@ -46,12 +48,12 @@ public:
 	bool connect(const char* host, unsigned int port, int clientId = 0);
 	void disconnect() const;
 	bool isConnected() const;
+    void STK_group_req();
 	void outputCSV(std::vector<file_row>* pre_processed_file, std::string file_name);
-	void inputStks();
 private:
 	//Functions go here
 	void reqCurrentTime();
-	void historicalDataRequests(const Contract& data);
+	void historicalDataRequests(const std::vector<Contract>& data);
 
 public:
 	//events
@@ -62,7 +64,8 @@ private:
 	void printContractDetailsMsg(const ContractDetails& contractDetails);
 	void printContractDetailsSecIdList(const TagValueListSPtr &secIdList);
 	void printBondContractDetailsMsg(const ContractDetails& contractDetails);
-	void testCSV();
+	void ReadCSV();
+    void ScanAndOutputMarketData(const file_row& data);
 private:
 	//variables
 	double support;

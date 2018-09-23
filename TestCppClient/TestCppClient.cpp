@@ -109,7 +109,7 @@ void TestCppClient::processMessages()
 			reqCurrentTime();
 			break;
 		case ST_HISTORICALDATAREQUEST:
-			historicalDataRequests(ContractSamples::TSLASTK());
+			historicalDataRequests(ContractSamples::compileSTKS());
 			break;
 		case ST_HISTORICALDATAREQUESTS_ACK:
 			break;
@@ -169,38 +169,30 @@ void TestCppClient::currentTime(long time)
 		m_state = ST_PING_ACK;
 	}
 }
-void TestCppClient::inputStks() 
-{
-	std::vector<Contract> historical_array;
-	unsigned int numberStks, reqId = 100;
-    std::vector<std::string> symbols;
-    printf("How many stocks? ");
-    std::cin >> numberStks;
-    for (unsigned int i = 0; i < numberStks; i++) {
-        std::string current_symbol;
-        printf("Enter stock symbol: ");
-        std::cin >> current_symbol;
-        m_pClient->reqMatchingSymbols(reqId, current_symbol);
-        reqId++;
 
-    }
-	
-}
-void TestCppClient::historicalDataRequests(const Contract &data)
+void TestCppClient::historicalDataRequests(const std::vector<Contract>& data)
 {
 	/*** Requesting historical data ***/
 	//! [reqhistoricaldata]
 	std::time_t rawtime;
 	std::tm* timeinfo;
 	char queryTime[80];
+    int reqId = 4001;
 
 	std::time(&rawtime);
 	timeinfo = std::localtime(&rawtime);
 	std::strftime(queryTime, 80, "%Y%m%d %H:%M:%S", timeinfo);
-	m_pClient->reqHistoricalData(4001, data, queryTime, "1 M", "1 day", "TRADES", 1, 1, false, TagValueListSPtr());
+    for(Contract i: data)
+    {
+        m_pClient->reqHistoricalData(reqId, i, queryTime, "1 M", "1 day", "TRADES", 1,1, false, TagValueListSPtr());
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        m_pClient->cancelHistoricalData(reqId);
+        reqId++;
+    }
+	
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 	/*** Canceling historical data requests ***/
-	m_pClient->cancelHistoricalData(4001);
+//	m_pClient->cancelHistoricalData(reqId);
 	m_state = ST_HISTORICALDATAREQUESTS_ACK;
 }
 time_t convert_to_tm(char date_array[])
@@ -227,6 +219,12 @@ time_t convert_to_tm(char date_array[])
 
 }
 
+void TestCppClient::ScanAndOuputMarketData(const file_row& data)
+{
+
+}
+
+
 void TestCppClient::outputCSV(std::vector<file_row>* pre_processed_file, std::string file_name)
 {
 	std::vector<file_row> &processing = *pre_processed_file;
@@ -246,10 +244,8 @@ void TestCppClient::outputCSV(std::vector<file_row>* pre_processed_file, std::st
 
 }
 
-void TestCppClient::testCSV()
+void TestCppClient::ReadCSV()
 {
-
-
 	std::vector<file_row> processed_csv;
 	std::time_t timestamp;
 	double open_price;
@@ -258,8 +254,6 @@ void TestCppClient::testCSV()
 	double low_price;
 	int volume;
 	std::string output_file_name;
-
-
 	auto readCSV = [&](std::ifstream& input_file)
 	{
 		if (!input_file.is_open()) {
@@ -299,9 +293,6 @@ void TestCppClient::testCSV()
 			};
 		};
 	};
-
-
-
 	std::string filename;
 	std::cout << "Enter a file address" << std::endl;
 	std::cin >> filename;
@@ -310,9 +301,6 @@ void TestCppClient::testCSV()
 	std::cout << "Enter a file name" << std::endl;
 	std::cin >> output_file_name;
 	outputCSV(&processed_csv, output_file_name);
-
-
-
 };
 
 
@@ -580,6 +568,7 @@ void TestCppClient::receiveFA(faDataType pFaDataType, const std::string& cxml) {
 //! [historicaldata]
 void TestCppClient::historicalData(TickerId reqId, const Bar& bar) {
 	printf("HistoricalData. ReqId: %ld - Date: %s, Open: %g, High: %g, Low: %g, Close: %g, Volume: %lld, Count: %d, WAP: %g\n", reqId, bar.time.c_str(), bar.open, bar.high, bar.low, bar.close, bar.volume, bar.count, bar.wap);
+
 }
 //! [historicaldata]
 

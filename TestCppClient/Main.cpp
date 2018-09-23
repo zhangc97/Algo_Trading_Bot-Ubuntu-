@@ -10,6 +10,7 @@
 #include <thread>
 
 #include "TestCppClient.h"
+#include "ContractSamples.h"
 
 const unsigned MAX_ATTEMPTS = 50;
 const unsigned SLEEP_TIME = 10;
@@ -42,7 +43,6 @@ int main(int argc, char** argv)
 		client.connect( host, port, clientId);
 
 		while( client.isConnected()) {
-			client.inputStks();
 			client.processMessages();
 		}
 		if( attempt >= MAX_ATTEMPTS) {
